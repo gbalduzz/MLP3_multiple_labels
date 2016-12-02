@@ -6,7 +6,7 @@ import h5py
 n_blocks = np.array([7,7,7])
 n_bins = 50
 
-f = h5py.File("preprocessed/reduced.hdf5", "w")
+f = h5py.File("../data/preprocessed/reduced.hdf5", "w")
 
 def load_component(comp_name):
     """

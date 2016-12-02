@@ -12,7 +12,7 @@
 
 import os
 
-os.system('mkdir src/preprocessed')
+os.system('mkdir data/preprocessed')
 os.system('cd src/ ; python reduce.py')
 os.system('cd src/ ; python main.py')
-os.system('mv src/final_sub.csv ./final_sub.csv')
+os.system('mv src/prediction.csv ./final_sub.csv')

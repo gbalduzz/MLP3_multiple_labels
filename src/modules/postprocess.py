@@ -25,5 +25,5 @@ def format(data, filename='final_prediction.csv'):
 
 
     #out = np.rec.fromarrays((out), dtype=mytype)
-    np.savetxt(filename, out,
+    np.savetxt(filename, out, fmt='%s',
                delimiter=',', header="ID,Sample,Label,Predicted", comments='')
