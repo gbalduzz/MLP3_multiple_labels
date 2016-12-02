@@ -1,0 +1,23 @@
+# theAteam
+gbalduzz@phys.ethz.ch
+Samarth Shuckla
+olga.klimashevska@uzh.ch
+
+##Prerequisites
+* python 2.7 modules: numpy, skilearn, nibabel, h5py.
+* the data set stored in `data/set_train/train_<id>.nii` and  `data/set_test/test_<id>.nii`
+* the targets saved as `targets.csv`
+
+## Preprocessig
+square grid blocking, zero features removal, standard scaler.
+## Features
+hystogram for feature
+## Model
+random forest, 10000 trees, no oot samples, entropy criterion
+
+## Description
+The preprocessor step is carried out by `reduce.py`. It divides each brain into 7x7x7 blocks then
+transform each block into a 50 bins hystogram. The columns that are zero across all training sets are
+removed. The numbers were chosen by 5-fold cross validation.
+
+`main.py` normalizes the data and makes the prediction with a RandomForest with 1e4 trees. The criterion for the choiche of cut is the entropy decrease. 

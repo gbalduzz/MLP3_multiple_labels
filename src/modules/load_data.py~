@@ -1,0 +1,22 @@
+import file_IO, preprocessing
+import numpy as np
+
+
+def load_data(n_blocks =9, n_bins=65, set="train"):
+    block_array = np.array([n_blocks,n_blocks,n_blocks])
+    data = file_IO.load_directory("set_"+set+"/", block_array, n_bins)
+    #return preprocessing.remove_zero_columns(data, n_train), n_train
+    return data
+
+"""
+from sklearn.ensemble import RandomForestClassifier
+class MyPredictor:
+
+    def __init__(self, n_bins, n_blocks):
+        self.n_bins = n_bins
+        self.n_blocks= n_blocks
+        self.classif=RandomForestClassifier(n_jobs=-1, oob_score=True, n_estimators=5000)
+
+    def fit(self, X, y):
+        RandomForestClassifier
+"""
