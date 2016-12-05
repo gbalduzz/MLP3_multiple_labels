@@ -22,10 +22,12 @@ train = scaler.transform(train)
 
 #get the scores
 print("computing the score")
-forest = RandomForestClassifier(criterion='entropy', n_jobs=1, n_estimators=1000)
-regr = MultiOutputClassifier(forest, n_jobs=1)
-scorer = metrics.make_scorer(metrics.hamming_loss, greater_is_better=False, needs_proba=False)
-scores = model_selection.cross_val_score(regr, train, y, scoring=scorer, cv=5, n_jobs=-1)
-avg = np.average(scores)
 
-print("score ", avg)
+for n in [500, 1000, 2000]:
+    forest = RandomForestClassifier(criterion='entropy', n_jobs=1, n_estimators=n)
+    regr = MultiOutputClassifier(forest, n_jobs=1)
+    scorer = metrics.make_scorer(metrics.hamming_loss, greater_is_better=False, needs_proba=False)
+    scores = model_selection.cross_val_score(regr, train, y, scoring=scorer, cv=5, n_jobs=-1)
+    avg = np.average(scores)
+
+    print("n tree: ", n,  "  score: ", avg)
