@@ -2,9 +2,8 @@ from modules import file_IO, preprocessing
 import numpy as np
 import h5py
 
-# Size of the data block to be averaged.
-n_blocks = np.array([4,4,4])
-n_bins = 50
+# number of points in each block
+block_num = np.array([4,4,4])
 
 f = h5py.File("../data/preprocessed/reduced.hdf5", "w")
 
@@ -14,11 +13,13 @@ def load_component(comp_name):
             2) n_train
     """
     print("loading training set...")
-    data = file_IO.load_directory("../data/set_train/"+comp_name+"/", n_blocks, n_bins)
+    def strategy(x):
+        return preprocessing.block_sum_scheme(x,block_num)
+    data = file_IO.load_directory("../data/set_train/"+comp_name+"/", strategy)
     n_train = data.shape[0]
     print("loading test set...")
     data = np.concatenate((data,
-                           file_IO.load_directory("../data/set_test/" + comp_name + "/", n_blocks, n_bins)
+                           file_IO.load_directory("../data/set_test/" + comp_name + "/", strategy)
                           ), axis = 0)
     return preprocessing.remove_zero_columns(data, n_train), n_train
     #return data, n_train
