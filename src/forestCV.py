@@ -8,12 +8,12 @@ import time
 
 print("startup")
 
-file = h5py.File("preprocessed/reduced.hdf5", "r")
+file = h5py.File("../data/preprocessed/reduced.hdf5", "r")
 
 #read the data
 print("loading training set...")
 train = np.array(file.get("train_data"))
-y = np.loadtxt("targets.csv") # targets for train set
+y = np.loadtxt("targets.csv",dtype=int, delimiter=',') # targets for train set
 
 
 # Scaling
