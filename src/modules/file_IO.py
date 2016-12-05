@@ -33,17 +33,17 @@ def load_directory(dirname, n_blocks, n_bins):
     assert(type == "train" or type=="test")
     sample_shape = nibabel.load(path+filenames[0]).shape
     four_d = (len(sample_shape) == 4)
-    n_features = np.prod(n_blocks)*n_bins
-    x = np.zeros([n,n_features])
+    #n_features = np.prod(n_blocks)*n_bins
+    x = []
 
     #pool = ThreadPool(NUM_THREADS)
     for i in range(n): # work item
         filename = path+"/"+type+"_"+str(i+1)+".nii"
         data=nibabel.load(filename).get_data()
         if four_d: data = data[:,:,:,0]
-        x[i]= prp.concatenate_hystogram(prp.blocks(crop(data, n_blocks), n_blocks), n_bins)
+        x.append(np.ndarray.flatten(prp.block_sum(crop(data, n_blocks), n_blocks, use_block_length = True)))
 
-    return x
+    return np.array(x)
 
 
 def sum_data(filename):

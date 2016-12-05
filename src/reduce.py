@@ -3,7 +3,7 @@ import numpy as np
 import h5py
 
 # Size of the data block to be averaged.
-n_blocks = np.array([7,7,7])
+n_blocks = np.array([4,4,4])
 n_bins = 50
 
 f = h5py.File("../data/preprocessed/reduced.hdf5", "w")

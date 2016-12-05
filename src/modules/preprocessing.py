@@ -12,16 +12,18 @@ def remove_zero_columns(x,n_train=-1,tollerance=0):
     keep_indices = np.greater(max_values,mask)
     return x[:, keep_indices]
 
-max
 
-def block_sum(x, nb):
+def block_sum(x, nb, use_block_length = False):
     """
     :param x: array to reduce
     :param nb: number of blocks per dimension. must divide exactly x.shape
     :return:  return block sums of the x array
     """
     assert(((np.array(x.shape) % nb == 0).all()))
-    l = np.array(x.shape) / nb
+    if use_block_length == False : l = np.array(x.shape) / nb
+    else :
+        l = nb
+        nb = np.array(x.shape) / nb
     res = np.zeros(nb)
     for i0 in range(nb[0]) :
         for i1 in range(nb[1]):
