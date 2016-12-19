@@ -20,9 +20,9 @@ def load_component(comp_name):
                            file_IO.load_directory("../data/set_test/" + comp_name + "/", block)
                           ), axis = 0)
 
-    print("applying pca...")
+    print("applying blocked pca...")
     data = preprocessing.blocked_pca(data, n_blocks, k1)
-
+    print("applying second pca...")
     data = preprocessing.compute_pca(data, k2, scale=True)
     return data, n_train
 

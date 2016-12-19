@@ -54,5 +54,6 @@ def blocked_pca(data, blocks, k):
     for i in range(blocks):
         slice = data[:, i*block_size:(i+1)*block_size]
         res[:, i*k:(i+1)*k] = compute_pca(slice,k, scale=False)
+        print("done step: ",i)
 
     return res
