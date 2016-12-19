@@ -3,22 +3,13 @@ import numpy as np
 import os
 import modules.preprocessing as prp
 #from multiprocessing.pool import ThreadPool
-def crop(x, n_blocks):
-    """"
-    cuts the 3D x array so that it is divisible by n_blocks, should roughly center the brain.
-    """
-    # enlarge this untill the division is exact
-    initial_limit = np.array([[19,154], [24,186], [8,152]])
 
-    remainder = (n_blocks - ((initial_limit[:, 1] - initial_limit[:, 0]) % n_blocks)) % n_blocks
-    limit = initial_limit
-    limit[:, 0] = initial_limit[:, 0] - remainder / 2
-    limit[:, 1] = initial_limit[:, 1] + remainder / 2 + (remainder % 2)
+# The brain should be roughly centered by this coords.
+bounds = np.array([[19, 154], [24, 186], [8, 152]])
 
-    return x[limit[0,0]:limit[0,1], limit[1,0]:limit[1,1], limit[2,0]:limit[2,1]]
+bounds_size = np.prod(bounds[:,1]-bounds[:,0])
 
-
-def load_directory(dirname):
+def load_directory(dirname, n_blocks):
     """
     :param dirname: relative dir path
     :return: np. array with n_files, n_features dimensions
@@ -32,16 +23,16 @@ def load_directory(dirname):
     assert(type == "train" or type=="test")
     sample_shape = nibabel.load(path+filenames[0]).shape
     four_d = (len(sample_shape) == 4)
-    n_features = np.prod(sample_shape)
-    x = np.zeros([n,n_features])
+    x = []
 
     #pool = ThreadPool(NUM_THREADS)
     for i in range(n): # work item
         filename = path+"/"+type+"_"+str(i+1)+".nii"
         data=nibabel.load(filename).get_data()
-        x[i]= np.ndarray.flatten(data)
+        if four_d: data = data[:,:,:,0]
+        x.append(np.ndarray.flatten(prp.blocks(data, n_blocks, bounds)))
 
-    return x
+    return np.array(x)
 
 
 def sum_data(filename):

@@ -2,27 +2,34 @@ from modules import file_IO, preprocessing
 import numpy as np
 import h5py
 
-# Number of kept dimensions.
-k = 100000
-
+# Number of kept dimensions per block.
+k1 = 520
+block =np.array([7,7,7])
+# Number of final dimensions
+k2 = 100000
 f = h5py.File("../data/preprocessed/reduced.hdf5", "w")
 
+n_blocks = np.prod(block)
 def load_component(comp_name):
     print("loading training set...")
-    train = file_IO.load_directory("../data/set_train/"+comp_name+"/")
+    data = file_IO.load_directory("../data/set_train/"+comp_name+"/", block)
+    n_train = data.shape[0]
 
-    train, U, S = preprocessing.compute_pca(train, k)
+    print("loading testing set...")
+    data = np.concatenate((data,
+                           file_IO.load_directory("../data/set_test/" + comp_name + "/", block)
+                          ), axis = 0)
 
-    print("loading test set...")
-    test = file_IO.load_directory("../data/set_test/" + comp_name + "/")
-    test = preprocessing.apply_pca(test, U, S)
+    print("applying pca...")
+    data = preprocessing.blocked_pca(data, n_blocks, k1)
 
-    return train, test
+    data = preprocessing.compute_pca(data, k2, scale=True)
+    return data, n_train
 
 
-train, test = load_component("")
+data, n_train = load_component("")
 
 print("Saving to disk.")
-f.create_dataset("train_data", data = train)
-f.create_dataset("test_data",  data = test)
+f.create_dataset("train_data", data=data[:n_train, :])
+f.create_dataset("test_data",  data=data[n_train:, :])
 
