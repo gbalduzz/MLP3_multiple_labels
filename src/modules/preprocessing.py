@@ -1,4 +1,5 @@
 import numpy as np
+import h5py
 
 def crop(x, n_blocks, bounds):
     """"
@@ -41,19 +42,19 @@ def compute_pca(x, n, scale = False):
     x -= np.mean(x,  axis = 0)
     cov = np.dot(x.T, x) / n_sets
     U,S,V = np.linalg.svd(cov)
-    # reduce dimensions
+    reduce dimensions
     if scale: return np.dot(x, U[:,:n]) / np.sqrt(S[:n]+epsilon)
     else : return np.dot(x, U[:,:n])
 
 
-def blocked_pca(data, blocks, k):
+def blocked_pca(data, blocks, k, file):
     assert(data.shape[1] % blocks == 0)
     block_size = data.shape[1] / blocks
-    res = np.zeros([data.shape[0], k*blocks])
 
     for i in range(blocks):
         slice = data[:, i*block_size:(i+1)*block_size]
-        res[:, i*k:(i+1)*k] = compute_pca(slice,k, scale=False)
+        res = compute_pca(slice,k, scale=False)
+        file.create_dataset("block_"+str(i), data=res)
         print("done step: ",i)
 
-    return res
+
