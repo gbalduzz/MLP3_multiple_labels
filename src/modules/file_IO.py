@@ -18,12 +18,11 @@ def crop(x, n_blocks):
     return x[limit[0,0]:limit[0,1], limit[1,0]:limit[1,1], limit[2,0]:limit[2,1]]
 
 
-def load_directory(dirname, n_blocks, n_bins):
+def load_directory(dirname):
     """
     :param dirname: relative dir path
     :return: np. array with n_files, n_features dimensions
     """
-    assert(len(n_blocks) == 3)
 
     path=os.getcwd()+"/"+dirname
     filenames = [name for name in os.listdir(path) if name.split('.')[-1]=='nii']
@@ -33,15 +32,14 @@ def load_directory(dirname, n_blocks, n_bins):
     assert(type == "train" or type=="test")
     sample_shape = nibabel.load(path+filenames[0]).shape
     four_d = (len(sample_shape) == 4)
-    n_features = np.prod(n_blocks)*n_bins
+    n_features = np.prod(sample_shape)
     x = np.zeros([n,n_features])
 
     #pool = ThreadPool(NUM_THREADS)
     for i in range(n): # work item
         filename = path+"/"+type+"_"+str(i+1)+".nii"
         data=nibabel.load(filename).get_data()
-        if four_d: data = data[:,:,:,0]
-        x[i]= prp.concatenate_hystogram(prp.blocks(crop(data, n_blocks), n_blocks), n_bins)
+        x[i]= np.ndarray.flatten(data)
 
     return x
 

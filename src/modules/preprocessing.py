@@ -51,3 +51,23 @@ def blocks(x,nb):
                     i2 * l[2]: (i2 + 1) * l[2]])
                 count += 1
     return res
+
+def compute_pca(x, n):
+    """
+    :param x: input dataset
+    :param n: number if dimensions to keep
+    :return:  reduced dataset, change if basis matrix, eingenvalues
+    """
+    epsilon = 1e-4
+    n_sets = x.shape[0]
+    x -= np.mean(x,  axis = 0)
+    cov = np.dot(x.T, x) / n_sets
+    U,S,V = np.linalg.svd(cov)
+    # reduce dimensions
+    U = U[:,:n]
+    S = S[:n]
+    x = np.dot(x, U[:,:n]) / np.sqrt(S+epsilon)
+    return  x, U, S
+
+def apply_pca(x, U, S):
+    return np.dot(x, U[:,:n]) / np.sqrt(S+epsilon)
