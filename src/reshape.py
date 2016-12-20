@@ -3,7 +3,6 @@ import numpy as np
 import h5py
 
 # Number of kept dimensions per block.
-k1 = 520
 block =np.array([7,7,7])
 
 n_blocks = np.prod(block)
@@ -18,8 +17,10 @@ data = np.concatenate((data,
                      ), axis = 0)
 
 print("applying blocked pca...")
-f = h5py.File("../data/preprocessed/blocks.hdf5")
-preprocessing.blocked_pca(data, n_blocks, k1, f)
+f = h5py.File("../data/preprocessed/reshaped.hdf5", "w")
+f.create_dataset("data", data=data)
+f.create_dataset("n_train", data=n_train)
+f.create_dataset("blocks", data=block)
 
 
 
