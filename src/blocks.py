@@ -14,11 +14,11 @@ n_train = data.shape[0]
 
 print("loading testing set...")
 data = np.concatenate((data,
-                       file_IO.load_directory("../data/set_test/", block)
-                      ), axis = 0)
+                      file_IO.load_directory("../data/set_test/", block)
+                     ), axis = 0)
 
 print("applying blocked pca...")
-f = h5py.File("../data/preprocessed/blocks.hdf5", "w")
+f = h5py.File("../data/preprocessed/blocks.hdf5")
 preprocessing.blocked_pca(data, n_blocks, k1, f)
 
 

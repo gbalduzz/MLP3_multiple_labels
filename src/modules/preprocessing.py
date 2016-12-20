@@ -42,7 +42,7 @@ def compute_pca(x, n, scale = False):
     x -= np.mean(x,  axis = 0)
     cov = np.dot(x.T, x) / n_sets
     U,S,V = np.linalg.svd(cov)
-    reduce dimensions
+    #reduce dimensions
     if scale: return np.dot(x, U[:,:n]) / np.sqrt(S[:n]+epsilon)
     else : return np.dot(x, U[:,:n])
 
@@ -51,10 +51,22 @@ def blocked_pca(data, blocks, k, file):
     assert(data.shape[1] % blocks == 0)
     block_size = data.shape[1] / blocks
 
-    for i in range(blocks):
+    #read if previous work was done
+    try:
+        last_done = np.array(file.get("last_done"))[0]
+    except:
+        file.create_dataset("last_done", shape = [1], data=0)
+        last_done = -1
+
+    for i in range(last_done+1, blocks):
         slice = data[:, i*block_size:(i+1)*block_size]
-        res = compute_pca(slice,k, scale=False)
+        res = compute_pca(slice, k, scale=False)
+        # write result to file
         file.create_dataset("block_"+str(i), data=res)
+        #update iteration count
+        set = file["last_done"]
+        set[...] = i
+        file.flush()
         print("done step: ",i)
 
 
