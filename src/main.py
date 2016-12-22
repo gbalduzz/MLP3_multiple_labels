@@ -1,42 +1,32 @@
 import numpy as np
-from sklearn import preprocessing
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.multioutput import MultiOutputClassifier
-from modules import postprocess
-import h5py
-import time
+from modules import file_IO, models
+#import time
 
-print("startup")
 
-file = h5py.File("../data/preprocessed/reduced.hdf5", "r")
-
-#read the data
 print("loading training set...")
-train = np.array(file.get("train_data"))
-y = np.loadtxt("targets.csv", dtype=int, delimiter=',') # targets for train set
+tf = file_IO.load_directory("../data/set_train/")
+# center the data
+tf -= 0.5
+
+print("loading labels...")
+y = np.loadtxt("targets.csv", dtype=int, delimiter=',')
+
+## Reshape array according to tensorflow requirements
+tf = tf.reshape(tf.shape[0],tf.shape[1],tf.shape[2],tf.shape[3],1)
+num_classes = 3 #No of outputs
+
+"""For the model below, the input shape needs to be specified. At present it is
+(176,208,176,1), but if you chose to resize the image, it should be changed accordingly.
+The first argument of the convolution layer is the number of filters(32 below), the next is
+the size of kernel(3x3x3 in this case)"""
 
 
-# Scaling
-scaler = preprocessing.StandardScaler().fit(train)
-train = scaler.transform(train)
 
-# Train the Model
-start = time.clock()
-print("start training")
-forest = RandomForestClassifier(n_estimators=5000, criterion='entropy')
-multi_target_forest = MultiOutputClassifier(forest, n_jobs=-1)
-multi_target_forest.fit(train,y)
-finish = time.clock()
-print("training time: ", finish-start)
-del train
+# choose or main or baseline _model
+model = models.main_model()
+# Fit the model
+model.fit(tf, y, nb_epoch=10, batch_size=3)
 
 
-# Make Predictions and save
-print("loading and making predictions")
-test  = np.array(file.get("test_data"))
-file.close()
-test = scaler.transform(test)
-
-prediction = multi_target_forest.predict(test)
-postprocess.format(prediction, "prediction.csv")
-print("saved predictions to prediction.csv")
+#postprocess.format(prediction, "prediction.csv")
+#print("saved predictions to prediction.csv")
