@@ -30,10 +30,11 @@ def load_directory(dirname):
     type = filenames[0].split('_')[0]
     assert(type == "train" or type=="test")
     sample_shape = nibabel.load(path+filenames[0]).shape
-    n_features = np.prod(sample_shape)
-    x = np.zeros([n,n_features])
+    #n_features = np.prod(sample_shape)
+    n = 5# for debug
+    x = np.zeros([n,sample_shape[0],sample_shape[1],sample_shape[2]])
 
-    for i in range(n): # work item
+    for i in range(n): # n
         filename = path+"/"+type+"_"+str(i+1)+".nii"
         x[i]= nibabel.load(filename).get_data()[:,:,:,0]
 

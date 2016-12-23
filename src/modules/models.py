@@ -8,12 +8,17 @@ from keras.layers.convolutional import Convolution2D,Convolution3D
 from keras.layers.convolutional import MaxPooling2D,MaxPooling3D,AveragePooling3D
 from keras.utils import np_utils
 
+num_classes = 3 # number of outputs
+
 def main_model():
     # create model
+    layer_depth = 30
+    field = 5
+
     model = Sequential()
-    model.add(Convolution3D(30, 5, 5, 5, border_mode='valid', input_shape=(176, 208, 176),
-                        activation='relu',
-                            init='he_normal', W_constraint=maxnorm(3)))
+    model.add(Convolution3D(layer_depth, field, field, field, border_mode='valid', input_shape=(176, 208, 176),
+        activation='relu',
+        init='he_normal', W_constraint=maxnorm(3)))
     model.add(AveragePooling3D(pool_size=(4, 4, 4)))
     model.add(Dropout(0.2))
     model.add(BatchNormalization())
@@ -46,7 +51,7 @@ def main_model():
 
 def baseline_model():
     model = Sequential()
-    model.add(Convolution3D(32, 3, 3, 3, border_mode='valid', input_shape=(176, 208, 176),
+    model.add(Convolution3D(32, 3, 3, 3, border_mode='valid', input_shape=(176, 208, 176, 1),
                             activation='relu',init='he_normal',W_constraint = maxnorm(3)))
 #    model.add(BatchNormalization())
     model.add(Flatten())
