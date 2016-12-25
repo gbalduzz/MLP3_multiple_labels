@@ -12,16 +12,16 @@ num_classes = 3 # number of outputs
 
 def main_model(dims):
     # create model
-    layer_depth = 20
+    layer_depth = 64
     field = 5
-    drop =0.5 # drop rate
+    drop =0.2 # drop rate
 
     model = Sequential()
     # first layer has wider field
     model.add(Convolution3D(layer_depth, field, field, field, border_mode='valid', input_shape=[dims[1], dims[2], dims[3], dims[4]],
-        activation='relu',
+        activation='relu', subsample=(2,2,2),
         init='he_normal', W_constraint=maxnorm(3)))
-    model.add(MaxPooling3D(pool_size=(2, 2, 2), strides=(2, 2, 2)))
+    #model.add(MaxPooling3D(pool_size=(2, 2, 2), strides=(2, 2, 2)))
     model.add(Dropout(drop))
     model.add(BatchNormalization())
     for i in range(4):
