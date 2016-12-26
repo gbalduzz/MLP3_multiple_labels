@@ -30,8 +30,7 @@ def load_directory(dirname):
     type = filenames[0].split('_')[0]
     assert(type == "train" or type=="test")
     sample_shape = nibabel.load(path+filenames[0]).shape
-    #n_features = np.prod(sample_shape)
-    n = 5# for DEBUG purposes
+    #n = 5# for DEBUG purposes
     x = np.zeros([n,sample_shape[0],sample_shape[1],sample_shape[2],1])
 
     for i in range(n): # n

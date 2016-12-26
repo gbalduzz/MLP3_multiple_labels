@@ -16,7 +16,7 @@ y = np.loadtxt("targets.csv", dtype=int, delimiter=',')
 batch = 50
 model = models.main_model(tf.shape)
 # Fit the model
-model.fit(tf, y[:tf.shape[0],:], nb_epoch=1, batch_size=batch)
+model.fit(tf, y[:tf.shape[0],:], nb_epoch=10, batch_size=batch)
 
 print('make predictions:')
 del tf
